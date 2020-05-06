@@ -27,7 +27,15 @@ class Cd (path: String) extends Command {
   }
 
   def findEntry(root: Directory, path: String): DirEntry = {
-    val tokens: List[String] = path.substring(1).split(Directory.SEPERATOR).toList
+    @tailrec
+    def collapseRelativeTokens(tokens: List[String], accumulator: List[String]): List[String] = {
+      if(tokens.isEmpty) accumulator
+      else if(".".equals(tokens.head)) collapseRelativeTokens(tokens.tail, accumulator)
+      else if ("..".equals(tokens.head)) {
+        if (accumulator.isEmpty) null
+        else collapseRelativeTokens(tokens.tail, accumulator.init)
+      } else  collapseRelativeTokens(tokens.tail, accumulator :+ tokens.head)
+    }
 
     @tailrec
     def findEntryUtil(dir: Directory, tokens: List[String]): DirEntry = {
@@ -40,7 +48,11 @@ class Cd (path: String) extends Command {
         } else null
       }
     }
-    findEntryUtil(root, tokens)
+
+    val tokens: List[String] = path.substring(1).split(Directory.SEPERATOR).toList
+    val newTokens = collapseRelativeTokens(tokens, List())
+    if (newTokens == null) null
+    else findEntryUtil(root, newTokens)
   }
 
   override def apply(state: State): State = {
