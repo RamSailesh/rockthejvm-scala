@@ -24,6 +24,7 @@ object Command {
   }
 
   def from(input:String):Command = {
+    println("input command is " + input)
     val tokens = input.split(" ")
     if (input.isEmpty || tokens.isEmpty) emptyCommand
     else {
