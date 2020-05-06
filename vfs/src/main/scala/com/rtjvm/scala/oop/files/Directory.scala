@@ -23,7 +23,8 @@ class Directory (override val parentPath: String,
   def addEntry(newDir: DirEntry) =
     new Directory(parentPath, name, contents :+ newDir)
 
-  def findDescendant(path: List[String]): Directory = {
+  @tailrec
+  final def findDescendant(path: List[String]): Directory = {
     if (path.isEmpty) this
     else findEntry(path.head).asDirectory.findDescendant(path.tail)
   }
@@ -35,11 +36,14 @@ class Directory (override val parentPath: String,
 
   def hasEntry(name: String): Boolean = findEntry(name) != null
 
-  def path: String = if (name.isEmpty) name else s"$parentPath${Directory.SEPERATOR}$name"
+  def path: String = if (name.isEmpty) Directory.SEPERATOR else s"$parentPath${Directory.SEPERATOR}$name"
 
   override def asDirectory: Directory = this
 
   override def prettyString: String = s"$name[Directory]"
+
+  override def asFile: File = throw new RuntimeException("Directory cannot be converted to File")
+
 }
 
 object Directory {
