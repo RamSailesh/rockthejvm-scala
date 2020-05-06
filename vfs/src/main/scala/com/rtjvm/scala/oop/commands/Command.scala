@@ -27,38 +27,27 @@ object Command {
   def from(input:String):Command = {
     val tokens = input.split(" ")
     if (input.isEmpty || tokens.isEmpty) emptyCommand
-    else if (MKDIR.equals(tokens(0))) {
-      if (tokens.length < 2) incompleteCommand(MKDIR)
-      else new MkDir(tokens(1))
+    else {
+      tokens(0) match {
+        case MKDIR => if (tokens.length < 2) incompleteCommand(MKDIR)
+        else new MkDir(tokens(1))
+        case LS => if (tokens.length != 1) incompleteCommand(LS)
+        else new Ls()
+        case PWD => if (tokens.length != 1) incompleteCommand(PWD)
+        else new Pwd()
+        case TOUCH => if (tokens.length < 2) incompleteCommand(MKDIR)
+        else new Touch(tokens(1))
+        case CD => if (tokens.length < 2) incompleteCommand(MKDIR)
+        else new Cd(tokens(1))
+        case RM => if (tokens.length < 2) incompleteCommand(RM)
+        else new Rm(tokens(1))
+        case PWD => if (tokens.length != 1) incompleteCommand(PWD)
+        else new Pwd()
+        case ECHO => new Echo(tokens.tail)
+        case CAT => if (tokens.length != 2) incompleteCommand(CAT)
+        else new Cat(tokens(1))
+        case _ => new UnknownCommand()
+      }
     }
-    else if (TOUCH.equals(tokens(0))) {
-      if (tokens.length < 2) incompleteCommand(MKDIR)
-      else new Touch(tokens(1))
-    }
-    else if (CD.equals(tokens(0))) {
-      if (tokens.length < 2) incompleteCommand(MKDIR)
-      else new Cd(tokens(1))
-    }
-    else if (RM.equals(tokens(0))) {
-      if (tokens.length < 2) incompleteCommand(RM)
-      else new Rm(tokens(1))
-    }
-    else if (LS.equals(tokens(0))) {
-      if (tokens.length != 1) incompleteCommand(LS)
-      else new Ls()
-    }
-    else if (PWD.equals(tokens(0))) {
-      if (tokens.length != 1) incompleteCommand(PWD)
-      else new Pwd()
-    }
-    else if (ECHO.equals(tokens(0))) {
-      new Echo(tokens.tail)
-    }
-    else if (CAT.equals(tokens(0))) {
-      if (tokens.length != 2) incompleteCommand(CAT)
-      else new Cat(tokens(1))
-    }
-    else new UnknownCommand()
   }
-
 }
