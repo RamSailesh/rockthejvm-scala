@@ -36,7 +36,12 @@ class Directory (override val parentPath: String,
 
   def hasEntry(name: String): Boolean = findEntry(name) != null
 
-  def path: String = if (name.isEmpty) Directory.SEPERATOR else s"$parentPath${Directory.SEPERATOR}$name"
+  def path: String =
+    if (name.isEmpty) Directory.SEPERATOR
+    else if (Directory.SEPERATOR.equals(parentPath)) s"$parentPath$name"
+    else s"$parentPath${Directory.SEPERATOR}$name"
+
+  def isRoot:Boolean = (parentPath == null)
 
   override def asDirectory: Directory = this
 
@@ -44,6 +49,9 @@ class Directory (override val parentPath: String,
 
   override def asFile: File = throw new RuntimeException("Directory cannot be converted to File")
 
+  override def isDirectory: Boolean = true
+
+  override def isFile: Boolean = false
 }
 
 object Directory {

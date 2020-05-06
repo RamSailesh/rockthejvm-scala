@@ -3,8 +3,9 @@ package com.rtjvm.scala.oop.commands
 import com.rtjvm.scala.oop.files.{DirEntry, Directory}
 import com.rtjvm.scala.oop.filesystem.State
 
-class CreateEntry (name: String) extends Command {
-  def doCreateDirEntry(state: State, name: String):DirEntry = ???
+abstract class CreateEntry (name: String) extends Command {
+  def doCreateDirEntry(state: State, name: String):DirEntry
+
   def checkIllegal(name: String): Boolean = name.contains(".")
 
   def updateStructure(currentDirectory: Directory, path: List[String], newEntry: DirEntry): Directory = {
