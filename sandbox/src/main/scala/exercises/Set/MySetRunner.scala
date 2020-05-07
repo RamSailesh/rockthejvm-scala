@@ -13,5 +13,6 @@ object MySetRunner extends App {
 
   val nots1 = !s1
   println(nots1.contains(3))
+  println(nots1(3)) // same as nots1.contains due to apply method
   println(nots1.contains(10))
 }
