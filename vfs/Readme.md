@@ -1,13 +1,12 @@
 RocktheJVM-Exercise
 
 Virtual File System
-
-Read Commands
-cd
-ls
-cat
-
-Write Commands
--> mkdir 
--> rm
--> echo
+Supported Commands
+* mkdir
+* ls
+* pwd
+* touch
+* cd
+* rm
+* echo
+* cat
