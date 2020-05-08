@@ -64,6 +64,4 @@ object CurriesnPAF extends App {
   byFunction(method2) // compiler does ETA Expansion
   byFunction(()=>12)
   byFunction(method2 _) // compiler does ETA Expansion
-
-
 }
