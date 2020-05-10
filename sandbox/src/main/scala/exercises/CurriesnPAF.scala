@@ -64,4 +64,21 @@ object CurriesnPAF extends App {
   byFunction(method2) // compiler does ETA Expansion
   byFunction(()=>12)
   byFunction(method2 _) // compiler does ETA Expansion
+
+
+  def checkStraightLine(coordinates: Array[Array[Int]]): Boolean = {
+    def isStraightLine(p1: Array[Int], p2: Array[Int])(p3: Array[Int]):Boolean = {
+      (p3(1)-p1(1))*(p2(0)-p1(0)) - (p3(0)-p1(0))*(p2(1)-p1(1)) == 0
+    }
+    if (coordinates.length > 2) {
+      val firstwoPoints = coordinates.take(2)
+      val isStraightLinePoints: Array[Int] => Boolean = isStraightLine(firstwoPoints(0), firstwoPoints(1))
+      coordinates.takeRight(coordinates.length - 2).foldLeft(true) {
+        (accumulator, point) => {
+          if (!accumulator) accumulator
+          else isStraightLinePoints(point)
+        }
+      }
+    } else true
+  }
 }
