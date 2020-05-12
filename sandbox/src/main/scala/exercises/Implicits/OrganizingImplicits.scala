@@ -22,8 +22,7 @@ object OrganizingImplicits extends App {
     Person("Manju", 28),
     Person("Andy", 25)
   )
-
-  println(persons.sorted) // sort function is passed implicitly by declaring above
+//  println(persons.sorted) // sort function is passed implicitly by declaring above
 
   /*
   Implicit Scope Priority
