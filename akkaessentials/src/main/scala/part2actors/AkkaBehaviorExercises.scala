@@ -51,7 +51,27 @@ object AkkaBehaviorExercises extends App {
   case class AggregateVotes(citizens: Set[ActorRef])
   class VoteAggregator extends Actor {
 
-    def voteStatusResponseReceived(votes: List[String], count: Int): Receive = {
+    def awaitingCommand: Receive = {
+      case AggregateVotes(citizens) =>
+        citizens.foreach(_ ! VoteStatusRequest)
+        context.become(awaitingStatuses(citizens, Map()))
+    }
+
+    def awaitingStatuses(stillWaiting: Set[ActorRef], votes: Map[String,Int]): Receive = {
+      case VoteStatusReply(None) =>
+        sender() ! VoteStatusRequest
+      case VoteStatusReply(Some(candidate)) =>
+        val currentStillWaiting = stillWaiting - sender()
+        val currVotes = votes.getOrElse(candidate, 0) + 1
+        val newStatus = votes + (candidate -> currVotes)
+        if (currentStillWaiting.isEmpty) {
+          println(newStatus)
+        } else {
+          context.become(awaitingStatuses(currentStillWaiting, newStatus))
+        }
+    }
+
+  /*  def voteStatusResponseReceived(votes: List[String], count: Int): Receive = {
       case AggregateVotes(citizens: Set[ActorRef]) => {
         context.become(voteStatusResponseReceived(votes, citizens.size + count))
         citizens.foreach(_ ! VoteStatusRequest)
@@ -60,8 +80,8 @@ object AkkaBehaviorExercises extends App {
         if (votes.length == count) println((votes :+ candidate.getOrElse("")).filter(!_.isEmpty).groupBy(x => x).map(x => (x._1, x._2.length)))
         else context.become(voteStatusResponseReceived(votes :+ candidate.getOrElse(""), count))
     }
-    
-    override def receive: Receive = voteStatusResponseReceived(List(), -1)
+*/
+    override def receive: Receive = awaitingCommand
   }
 
   val alice = actorSystem.actorOf(Props[Citizen])
