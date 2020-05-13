@@ -96,4 +96,17 @@ object AkkaExercises extends App {
   val userRef = actorSystem.actorOf(Props[User])
   val bank = actorSystem.actorOf(Props[Bank])
   userRef ! User.LivetheLife(bank)
+
+  // are sent messages ordered? A sends B n1 and n2, n1 always comes before n2
+
+  // how are actors run asynchronous, akka runs on jvm => threads!!
+  // race conditions? a
+  /*
+    actorsystem maintains a threadpool of ~ 100 threads
+    actorsystem schedules actors for execution, for each thread one actor is taken for execution
+    actors -> have a queue called as message box, where messages are queued into the mailbox
+           -> process messages, propagates results to other actors ...
+           -> since each actor will run in one thread, makes it virtually single threaded execution
+  */
+
 }
